@@ -2,7 +2,9 @@ services:
   # C# 抓取服务
   scraper:
     build:
-      context: .
+      # 告诉 Docker：构建的“上下文”环境在 C# 文件夹里
+      context: ./src/scraper-csharp
+      # 告诉 Docker：Dockerfile 就在这个 context 里面
       dockerfile: Dockerfile
     container_name: csharp-box
     # --- 核心改动：用这行替换掉原来的启动逻辑 ---
