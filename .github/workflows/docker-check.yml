@@ -1,0 +1,24 @@
+name: Docker Build Check
+
+# 什么时候触发？当你 push 代码到 main 分支，或者发起 pull request 时
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    # 重点：这行代码告诉 GitHub 在云端开一台最新的 Ubuntu 虚拟机给你用！
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 把你的代码从 GitHub 仓库“下载”到这台云端虚拟机上
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 运行 Docker Build 命令
+      - name: Build the Docker image
+        run: |
+          cd LeetCodeHelper
+          docker build . --file Dockerfile --tag test-build:${{ github.sha }}
