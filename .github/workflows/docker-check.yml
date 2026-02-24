@@ -46,7 +46,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./LeetCodeHelper
+          # 必须确保这里指向你最新的文件夹路径
+          context: ./src/scraper-csharp
           push: true
           # 这样写，GitHub 的编辑器就不会再报“Invalid”了
           tags: ${{ steps.prep.outputs.image_name }}:latest

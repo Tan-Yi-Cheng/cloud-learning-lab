@@ -484,3 +484,7 @@ $RECYCLE.BIN/
 # Docker Experiments & Large Packs
 *.tar
 docker-pack/
+
+# 忽略 .NET 编译产物
+**/bin/
+**/obj/
