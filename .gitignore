@@ -485,6 +485,6 @@ $RECYCLE.BIN/
 *.tar
 docker-pack/
 
-# 忽略 .NET 编译产物
+# 忽略 .NET 编译产物 - Ignore those files
 **/bin/
 **/obj/
