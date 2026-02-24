@@ -22,6 +22,9 @@ class Program
         string folderPath = "data"; // 对应容器内的路径
         string filePath = Path.Combine(folderPath, "inspiration.txt");
 
+        // 获取绝对路径（这能让你在日志里看到它在容器内的真实身份）
+        string absolutePath = Path.GetFullPath(filePath);
+
         try {
             // 确保文件夹存在
             if (!Directory.Exists(folderPath)) {
@@ -33,6 +36,10 @@ class Program
             await File.AppendAllTextAsync(filePath, logEntry + Environment.NewLine);
             
             Console.WriteLine($"💾 代码金句已同步到本地文件: {filePath}");
+
+            Console.WriteLine($"💾 数据已持久化！");
+            Console.WriteLine($"📍 容器内绝对路径: {absolutePath}"); 
+            Console.WriteLine($"🏠 对应宿主机位置: RootFolder/data/inspiration.txt (由 Docker Compose 映射)");
         }
         catch (Exception ex) {
             Console.WriteLine($"❌ 存储失败: {ex.Message}");
