@@ -1,24 +1,45 @@
 name: Docker Build Check
 
-# 什么时候触发？当你 push 代码到 main 分支，或者发起 pull request 时
+# 什么时候触发？当你 push 代码到 main 分支
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+
+# 给这个任务读写 Packages 的权限
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  build-test:
+  build-and-push:
     # 重点：这行代码告诉 GitHub 在云端开一台最新的 Ubuntu 虚拟机给你用！
     runs-on: ubuntu-latest
-
     steps:
       # 1. 把你的代码从 GitHub 仓库“下载”到这台云端虚拟机上
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. 运行 Docker Build 命令
-      - name: Build the Docker image
+      # 2. 登录到 GitHub 容器注册表 (GHCR)
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. 准备镜像名称（强制转小写，防止报错, 使用 id 并设置 output，这样编辑器就能“看见”它了
+      - name: Prepare Image Name
+        id: prep
         run: |
-          cd LeetCodeHelper
-          docker build . --file Dockerfile --tag test-build:${{ github.sha }}
+          # 强制转小写并存入 output
+          IMG="ghcr.io/${{ github.repository_owner }}/leetcode-scraper"
+          echo "image_name=$(echo $IMG | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      # 4. 构建并推送镜像, 引用方式改为 steps.prep.outputs.image_name
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./LeetCodeHelper
+          push: true
+          # 这样写，GitHub 的编辑器就不会再报“Invalid”了
+          tags: ${{ steps.prep.outputs.image_name }}:latest
