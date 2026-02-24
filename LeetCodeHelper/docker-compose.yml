@@ -1,0 +1,35 @@
+services:
+  # C# 抓取服务
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: csharp-box
+    # --- 核心改动：用这行替换掉原来的启动逻辑 ---
+    entrypoint: ["tail", "-f", "/dev/null"] 
+    # ---------------------------------------
+    # --- 新增这两行，让它保持运行 ---
+    tty: true
+    stdin_open: true
+    # ---------------------------
+    networks:
+      - learning-net
+    # 让它一直活着，方便我们进去 Ping
+    # command: sleep 300
+    volumes:
+      - ./data:/app/data
+
+  # 临时测试服务 (替代你刚才的手动 Ping)
+  tester:
+    image: alpine
+    container_name: network-tester
+    networks:
+      - learning-net
+    # 让它一直活着，方便我们进去 Ping
+    command: sleep 300
+    depends_on:
+      - scraper
+
+networks:
+  learning-net:
+    driver: bridge

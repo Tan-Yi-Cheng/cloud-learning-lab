@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Docker Experiments & Large Packs
+*.tar
+docker-pack/
