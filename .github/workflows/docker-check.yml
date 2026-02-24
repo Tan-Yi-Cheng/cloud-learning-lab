@@ -5,6 +5,13 @@ on:
   push:
     branches: [ main ]
 
+  # --- 新增这个云端闹钟 ---
+  schedule:
+    # 每天早上 0:00 (UTC 时间) 自动运行
+    # 分 时 日 月 周
+    - cron: '0 0 * * *' 
+  # ---------------------
+
 # 给这个任务读写 Packages 的权限
 permissions:
   contents: read
